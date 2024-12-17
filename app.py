@@ -186,24 +186,39 @@ if button_run_pressed:
   // Log the number of buttons found for debugging
   console.log('Number of buttons found:', playButtons.length);
 
-  console.log('Is this reached?');
   let buttonFound = false;
 
-  for (let button of playButtons) {
+  // Create an array to hold the click events to dispatch later
+  let clickEvents = [];
+
+  // Loop through all found play buttons
+  playButtons.forEach(button => {
     if (button.textContent.trim() === '▶') {
-      console.log("Clicking on button");
+      console.log("Queueing click on button");
       const clickEvent = new MouseEvent('click', {
         view: window,
         bubbles: true,
         cancelable: true
       });
-      button.parentElement.dispatchEvent(clickEvent);
+
+      // Store the click event in the array
+      clickEvents.push(button.parentElement);
       buttonFound = true;
     }
-  }
+  });
 
+  // If at least one button is found, dispatch all events
   if (buttonFound) {
-    resolve('Button clicked successfully');
+    console.log('Dispatching click events');
+    clickEvents.forEach(element => {
+      element.dispatchEvent(new MouseEvent('click', {
+        view: window,
+        bubbles: true,
+        cancelable: true
+      }));
+    });
+
+    resolve('All buttons clicked successfully');
   } else {
     reject('No button found');
   }
@@ -220,8 +235,9 @@ if button_run_pressed:
   console.log(finalMessage);
 });
 
-
 """)
+
+
 
             def pause_both():
                 # st_javascript("console.log('You pressed the button');")
@@ -244,24 +260,39 @@ if button_run_pressed:
   // Log the number of buttons found for debugging
   console.log('Number of buttons found:', playButtons.length);
 
-  console.log('Is this reached?');
   let buttonFound = false;
 
-  for (let button of playButtons) {
-    if (button.textContent.trim() === '◼') {
-      console.log("Clicking on button");
+  // Create an array to hold the click events to dispatch later
+  let clickEvents = [];
+
+  // Loop through all found play buttons
+  playButtons.forEach(button => {
+    if (button.textContent.trim() === '▶') {
+      console.log("Queueing click on button");
       const clickEvent = new MouseEvent('click', {
         view: window,
         bubbles: true,
         cancelable: true
       });
-      button.parentElement.dispatchEvent(clickEvent);
+
+      // Store the click event in the array
+      clickEvents.push(button.parentElement);
       buttonFound = true;
     }
-  }
+  });
 
+  // If at least one button is found, dispatch all events
   if (buttonFound) {
-    resolve('Button clicked successfully');
+    console.log('Dispatching click events');
+    clickEvents.forEach(element => {
+      element.dispatchEvent(new MouseEvent('click', {
+        view: window,
+        bubbles: true,
+        cancelable: true
+      }));
+    });
+
+    resolve('All buttons clicked successfully');
   } else {
     reject('No button found');
   }
