@@ -1,0 +1,9 @@
+numpy>=1.26.2
+pandas>=2.0.1
+pytest>=8.3.2
+plotly>=5.12.0
+simpy==4.0.2
+sim-tools==0.6.1
+streamlit==1.41.0
+vidigi
+streamlit-javascript
