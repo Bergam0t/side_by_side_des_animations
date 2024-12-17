@@ -170,8 +170,18 @@ if button_run_pressed:
                 st_javascript("""new Promise((resolve, reject) => {
   console.log('You pressed the button');
 
+  const parentDocument = window.parent.document;
+
+  // Select all <div> elements on the page
+  const divs = parentDocument.querySelectorAll('div');
+
+  // Log the total number of <div> elements
+  console.log('Total number of divs on the page:', divs.length);
+
+  console.log(document.body.innerHTML);
+
   // Define playButtons at the beginning
-  const playButtons = document.querySelectorAll('g.updatemenu-button text');
+  const playButtons = parentDocument.querySelectorAll('g.updatemenu-button text');
 
   // Log the number of buttons found for debugging
   console.log('Number of buttons found:', playButtons.length);
@@ -189,7 +199,64 @@ if button_run_pressed:
       });
       button.parentElement.dispatchEvent(clickEvent);
       buttonFound = true;
-      break;
+    }
+  }
+
+  if (buttonFound) {
+    resolve('Button clicked successfully');
+  } else {
+    reject('No button found');
+  }
+})
+.then((message) => {
+  console.log(message);
+  return 'Operation completed';
+})
+.catch((error) => {
+  console.log(error);
+  return 'Operation failed';
+})
+.then((finalMessage) => {
+  console.log(finalMessage);
+});
+
+
+""")
+
+            def pause_both():
+                # st_javascript("console.log('You pressed the button');")
+                st_javascript("""new Promise((resolve, reject) => {
+  console.log('You pressed the button');
+
+  const parentDocument = window.parent.document;
+
+  // Select all <div> elements on the page
+  const divs = parentDocument.querySelectorAll('div');
+
+  // Log the total number of <div> elements
+  console.log('Total number of divs on the page:', divs.length);
+
+  console.log(document.body.innerHTML);
+
+  // Define playButtons at the beginning
+  const playButtons = parentDocument.querySelectorAll('g.updatemenu-button text');
+
+  // Log the number of buttons found for debugging
+  console.log('Number of buttons found:', playButtons.length);
+
+  console.log('Is this reached?');
+  let buttonFound = false;
+
+  for (let button of playButtons) {
+    if (button.textContent.trim() === '◼') {
+      console.log("Clicking on button");
+      const clickEvent = new MouseEvent('click', {
+        view: window,
+        bubbles: true,
+        cancelable: true
+      });
+      button.parentElement.dispatchEvent(clickEvent);
+      buttonFound = true;
     }
   }
 
@@ -215,6 +282,8 @@ if button_run_pressed:
 """)
 
             st.button("Play Both Animations Simultaneously", on_click=play_both)
+
+            st.button("Pause Both Animations", on_click=pause_both)
 
             with scenario1_out:
 
