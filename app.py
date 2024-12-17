@@ -167,145 +167,52 @@ if button_run_pressed:
 
             def play_both():
                 # st_javascript("console.log('You pressed the button');")
-#                 st_javascript("""{
-# console.log('You pressed the button');
-
-# // Define playButtons at the beginning
-# const playButtons = document.querySelectorAll('g.updatemenu-button text');
-
-# // Log the number of buttons found for debugging
-# console.log('Number of buttons found:', playButtons.length);
-
-# console.log('Is this reached?');
-# let buttonFound = false;
-# for (let button of playButtons) {
-#   if (button.textContent.trim() === '▶') {
-#     console.log("Clicking on button");
-#     const clickEvent = new MouseEvent('click', {
-#       view: window,
-#       bubbles: true,
-#       cancelable: true
-#     });
-#     button.parentElement.dispatchEvent(clickEvent);
-#     buttonFound = true;
-#   }
-# }
-# if (!buttonFound) {
-#   console.log('No button found');
-#     }
-#                               }
-
-# """)
-
-
                 st_javascript("""new Promise((resolve, reject) => {
-    console.log('v70')
-    console.log('You pressed the button');
+  console.log('You pressed the button');
 
-    console.log(document.body.innerHTML);
+  // Define playButtons at the beginning
+  const playButtons = document.querySelectorAll('g.updatemenu-button text');
 
-    // Wait for the SVG to load (if dynamically added, you might need to add this)
-    const svgElement = document.querySelector('svg'); // Change this selector to match your SVG container if needed
-    if (svgElement) {
-        svgElement.addEventListener('load', () => {
-            // Once SVG is loaded, proceed to find buttons
-            findAndClickPlayButton();
-        });
-    } else {
-        // If SVG is already loaded, immediately try to find and click
-        findAndClickPlayButton();
+  // Log the number of buttons found for debugging
+  console.log('Number of buttons found:', playButtons.length);
+
+  console.log('Is this reached?');
+  let buttonFound = false;
+
+  for (let button of playButtons) {
+    if (button.textContent.trim() === '▶') {
+      console.log("Clicking on button");
+      const clickEvent = new MouseEvent('click', {
+        view: window,
+        bubbles: true,
+        cancelable: true
+      });
+      button.parentElement.dispatchEvent(clickEvent);
+      buttonFound = true;
+      break;
     }
+  }
 
-    function findAndClickPlayButton() {
-        // Query for all <g> elements with class 'updatemenu-button'
-        const playButtons = document.querySelectorAll('g.updatemenu-button');
-        console.log('Number of buttons found:', playButtons.length);
-
-        if (playButtons.length === 0) {
-            reject('No buttons found in SVG.');
-            return;
-        }
-
-        let buttonFound = false;
-
-        // Loop through all the play buttons
-        playButtons.forEach(button => {
-            // Find the text element inside the <g>
-            const textElement = button.querySelector('text');
-            if (textElement && textElement.textContent.trim() === '▶') {
-                console.log("Clicking on button");
-
-                // Dispatch the click event
-                const clickEvent = new MouseEvent('click', {
-                    view: window,
-                    bubbles: true,
-                    cancelable: true
-                });
-                button.dispatchEvent(clickEvent);  // Trigger click on <g> element
-                buttonFound = true;
-            }
-        });
-
-        if (buttonFound) {
-            resolve('Button clicked successfully');
-        } else {
-            reject('No button with ▶ text found');
-        }
-    }
+  if (buttonFound) {
+    resolve('Button clicked successfully');
+  } else {
+    reject('No button found');
+  }
 })
 .then((message) => {
-    console.log(message);
-    return 'Operation completed';
+  console.log(message);
+  return 'Operation completed';
 })
 .catch((error) => {
-    console.log(error);
-    return 'Operation failed';
+  console.log(error);
+  return 'Operation failed';
 })
 .then((finalMessage) => {
-    console.log(finalMessage);
+  console.log(finalMessage);
 });
 
 
-            """
-
-                )
-
-#     st.markdown(
-#     """
-#     <div id="div"></div>
-#     <script>
-# console.log('You pressed the button');
-
-# // Define playButtons at the beginning
-# const playButtons = document.querySelectorAll('g.updatemenu-button text');
-
-# // Log the number of buttons found for debugging
-# console.log('Number of buttons found:', playButtons.length);
-
-# console.log('Is this reached?');
-# let buttonFound = false;
-# for (let button of playButtons) {
-#   if (button.textContent.trim() === '▶') {
-#     console.log("Clicking on button");
-#     const clickEvent = new MouseEvent('click', {
-#       view: window,
-#       bubbles: true,
-#       cancelable: true
-#     });
-#     button.parentElement.dispatchEvent(clickEvent);
-#     buttonFound = true;
-#   }
-# }
-# if (!buttonFound) {
-#   console.log('No button found');
-#     }
-#                               }
-
-#     </script>
-#     """,
-#     unsafe_allow_html=True,
-# )
-
+""")
 
             st.button("Play Both Animations Simultaneously", on_click=play_both)
 
