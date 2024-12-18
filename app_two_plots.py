@@ -4,6 +4,7 @@ from vidigi.animation import animate_activity_log
 import pandas as pd
 from streamlit_utils import play_both, pause_both
 from utils import dict_diff
+from streamlit_javascript import st_javascript
 
 st.set_page_config(layout="wide")
 
@@ -210,6 +211,109 @@ if button_run_pressed:
             col_blank_button_a, col_button_1, col_blank_button_b = st.columns(3)
 
             col_button_1.button("Play Both Animations Simultaneously", on_click=play_both, use_container_width=True)
+
+
+            st_javascript("""(async () => {
+  // We wrap everything inside a function to return the promise
+  return (async () => {
+    // Log initial messages to verify execution
+    console.log("Commencing insertion of slider position monitoring code");
+
+    const parentDocument = window.parent.document;
+
+    console.log("Check this is reached");
+
+    // Function to start observing
+    function startObserving(element) {
+      console.log("Added observer code");
+      return new Promise((resolve, reject) => {
+        try {
+          observer.observe(element, {
+            attributes: true, // Watch for attribute changes
+            attributeFilter: ['style'], // Only listen to 'style' changes
+          });
+
+          resolve(`Started observing element: ${element.className}`);
+        } catch (error) {
+          reject('Error starting observer: ' + error);
+        }
+      });
+    }
+
+    // Create a MutationObserver to watch for changes in the style attribute
+    const observer = new MutationObserver(mutations => {
+      mutations.forEach(mutation => {
+        console.log('Mutation Observed', mutation);
+        if (mutation.type === 'attributes' && mutation.attributeName === 'style') {
+          console.log("Correct type of mutation");
+          const element = mutation.target;
+          const transformValue = element.getAttribute("transform");
+          console.log("Transform Value From Mutation:", transformValue);
+
+          // If transform was modified, propagate it to other elements with the same class
+          if (transformValue) {
+            console.log(transformValue);
+            propagateTransformChanges(element).then(
+              successMessage => {
+                console.log(successMessage);
+              },
+              errorMessage => {
+                console.error(errorMessage);
+              }
+            );
+          }
+        }
+      });
+    });
+
+    // Function to update transform on all elements with the same class
+    function propagateTransformChanges(element) {
+      return new Promise((resolve, reject) => {
+        try {
+          const transformValue = element.getAttribute("transform"); // Get the current transform value
+          const className = element.className; // Get the class of the element
+
+          // Find all elements with the same class name
+          const elements = parentDocument.querySelectorAll(`.${className}`);
+
+          // Apply the same transform value to all elements
+          elements.forEach(el => {
+            if (el !== element) {
+              el.style.transform = transformValue;
+            }
+          });
+
+          resolve(`Transform applied to ${elements.length} elements.`);
+        } catch (error) {
+          reject('Error propagating transform: ' + error);
+        }
+      });
+    }
+
+    // Find all elements with a given class and start observing them
+    let classToObserve = '.slider-grip-rect';
+    console.log("Looking for elements to observe of class", classToObserve);
+
+    const elementsToObserve = parentDocument.querySelectorAll(classToObserve);
+    console.log("Found", elementsToObserve.length, "elements to observe of class", classToObserve);
+
+    // Ensure that the code reaches here and starts observing elements
+    Array.from(elementsToObserve).forEach(element => {
+      console.log("Observing", element);
+      startObserving(element).then(
+        successMessage => {
+          console.log(successMessage); // Log success messages from startObserving
+        },
+        errorMessage => {
+          console.error(errorMessage); // Log error messages from startObserving
+        }
+      );
+    });
+
+  })(); // Immediately invoke this inner async function
+})();
+
+                      """)
 
             # col_button_2.button("Pause Both Animations", on_click=pause_both, use_container_width=True)
 
