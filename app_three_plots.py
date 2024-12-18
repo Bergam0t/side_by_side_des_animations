@@ -3,7 +3,7 @@ from example_1_simplest_case.ex_1_model_classes import g, Trial
 from vidigi.prep import reshape_for_animations, generate_animation_df
 from vidigi.animation import animate_activity_log, generate_animation
 import plotly.express as px
-
+from utils import dict_diff
 import pandas as pd
 from streamlit_utils import play_both, pause_both
 
@@ -83,6 +83,13 @@ if button_run_pressed:
         g.trauma_treat_var = s1_trauma_treat_var
         g.arrival_rate = s1_arrival_rate
 
+        scenario_1_attrs = {
+            "Number of Cubicles": g.n_cubicles,
+            "Trauma Treatment Mean (Minutes)": g.trauma_treat_mean,
+            "Trauma Treatment Variance (Minutes)": g.trauma_treat_var,
+            "Inter-Arrival Time (Minutes)": g.arrival_rate
+        }
+
         results_df_1 = Trial()
         results_df_1.run_trial()
 
@@ -146,6 +153,13 @@ if button_run_pressed:
         g.trauma_treat_mean = s2_trauma_treat_mean
         g.trauma_treat_var = s2_trauma_treat_var
         g.arrival_rate = s2_arrival_rate
+
+        scenario_2_attrs = {
+            "Number of Cubicles": g.n_cubicles,
+            "Trauma Treatment Mean (Minutes)": g.trauma_treat_mean,
+            "Trauma Treatment Variance (Minutes)": g.trauma_treat_var,
+            "Inter-Arrival Time (Minutes)": g.arrival_rate
+        }
 
         results_df_2 = Trial()
         results_df_2.run_trial()
@@ -243,6 +257,17 @@ if button_run_pressed:
     # )
 
         scenario1_out, scenario2_out = st.columns(2)
+
+
+        with scenario1_out:
+            st.write("**Parameters that Differ**")
+
+            st.write(dict_diff(scenario_1_attrs, scenario_2_attrs))
+
+        with scenario2_out:
+                st.write("**Parameters that Differ**")
+
+                st.write(dict_diff(scenario_2_attrs, scenario_1_attrs))
 
         @st.fragment
         def pathway_animations():

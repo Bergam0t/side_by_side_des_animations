@@ -3,6 +3,7 @@ from example_1_simplest_case.ex_1_model_classes import g, Trial
 from vidigi.animation import animate_activity_log
 import pandas as pd
 from streamlit_utils import play_both, pause_both
+from utils import dict_diff
 
 st.set_page_config(layout="wide")
 
@@ -176,21 +177,17 @@ if button_run_pressed:
     #                       name="PauseButton")])]
     # )
 
-        mismatched_attrs = {key: scenario_1_attrs[key]
-                    for key in scenario_1_attrs
-                    if scenario_1_attrs.get(key) != scenario_2_attrs.get(key)}
-
         scenario1_out, scenario2_out = st.columns(2)
 
         with scenario1_out:
             st.write("**Parameters that Differ**")
 
-            st.write({key: scenario_1_attrs[key] for key in scenario_1_attrs if key in mismatched_attrs})
+            st.write(dict_diff(scenario_1_attrs, scenario_2_attrs))
 
         with scenario2_out:
                 st.write("**Parameters that Differ**")
 
-                st.write({key: scenario_2_attrs[key] for key in scenario_2_attrs if key in mismatched_attrs})
+                st.write(dict_diff(scenario_2_attrs, scenario_1_attrs))
 
         @st.fragment
         def pathway_animations():
