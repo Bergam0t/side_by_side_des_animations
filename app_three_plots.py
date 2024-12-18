@@ -272,7 +272,9 @@ if button_run_pressed:
         @st.fragment
         def pathway_animations():
 
-            st.button("Play Animations Simultaneously", on_click=play_both)
+            col_blank_button_a, col_button_1, col_blank_button_b = st.columns(3)
+
+            col_button_1.button("Play Both Animations Simultaneously", on_click=play_both, use_container_width=True)
 
             # st.button("Pause All Animations", on_click=pause_both)
 
