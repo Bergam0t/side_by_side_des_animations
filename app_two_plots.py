@@ -80,6 +80,13 @@ if button_run_pressed:
         g.trauma_treat_var = s1_trauma_treat_var
         g.arrival_rate = s1_arrival_rate
 
+        scenario_1_attrs = {
+            "Number of Cubicles": g.n_cubicles,
+            "Trauma Treatment Mean (Minutes)": g.trauma_treat_mean,
+            "Trauma Treatment Variance (Minutes)": g.trauma_treat_var,
+            "Inter-Arrival Time (Minutes)": g.arrival_rate
+        }
+
         results_df_1 = Trial()
         results_df_1.run_trial()
 
@@ -123,6 +130,13 @@ if button_run_pressed:
         g.trauma_treat_var = s2_trauma_treat_var
         g.arrival_rate = s2_arrival_rate
 
+        scenario_2_attrs = {
+            "Number of Cubicles": g.n_cubicles,
+            "Trauma Treatment Mean (Minutes)": g.trauma_treat_mean,
+            "Trauma Treatment Variance (Minutes)": g.trauma_treat_var,
+            "Inter-Arrival Time (Minutes)": g.arrival_rate
+        }
+
         results_df_2 = Trial()
         results_df_2.run_trial()
 
@@ -162,14 +176,24 @@ if button_run_pressed:
     #                       name="PauseButton")])]
     # )
 
+        mismatched_attrs = {key: scenario_1_attrs[key]
+                    for key in scenario_1_attrs
+                    if scenario_1_attrs.get(key) != scenario_2_attrs.get(key)}
+
         scenario1_out, scenario2_out = st.columns(2)
+
+        with scenario1_out:
+            st.write("**Parameters that Differ**")
+
+            st.write({key: scenario_1_attrs[key] for key in scenario_1_attrs if key in mismatched_attrs})
+
+        with scenario2_out:
+                st.write("**Parameters that Differ**")
+
+                st.write({key: scenario_2_attrs[key] for key in scenario_2_attrs if key in mismatched_attrs})
 
         @st.fragment
         def pathway_animations():
-
-            st.button("Play Both Animations Simultaneously", on_click=play_both)
-
-            st.button("Pause Both Animations", on_click=pause_both)
 
             with scenario1_out:
 
@@ -180,9 +204,16 @@ if button_run_pressed:
 
             with scenario2_out:
 
+
                 st.plotly_chart(
                 activity_animation_2,
                     key="animation_scenario_2"
                 )
+
+            col_blank_button_a, col_button_1, col_button_2, col_blank_button_b = st.columns(4)
+
+            col_button_1.button("Play Both Animations Simultaneously", on_click=play_both, use_container_width=True)
+
+            col_button_2.button("Pause Both Animations", on_click=pause_both, use_container_width=True)
 
         pathway_animations()
