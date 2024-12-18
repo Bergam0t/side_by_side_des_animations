@@ -178,11 +178,11 @@ if button_run_pressed:
                 key="animation_scenario_1"
                 )
 
-        with scenario2_out:
+            with scenario2_out:
 
-            st.plotly_chart(
-            activity_animation_2,
-                key="animation_scenario_2"
-            )
+                st.plotly_chart(
+                activity_animation_2,
+                    key="animation_scenario_2"
+                )
 
         pathway_animations()
