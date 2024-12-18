@@ -9,6 +9,8 @@ from streamlit_utils import play_both, pause_both
 
 st.set_page_config(layout="wide")
 
+st.title("Side-by-side DES Animation - Animations Plus Additional Plots")
+
 event_position_df = pd.DataFrame([
                     {'event': 'arrival',
                      'x':  50, 'y': 280,
