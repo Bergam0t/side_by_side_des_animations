@@ -191,10 +191,6 @@ if button_run_pressed:
                     add_background_image="https://raw.githubusercontent.com/Bergam0t/side_by_side_des_animations/refs/heads/main/Simplest%20Model%20Background%20Image%20-%20Horizontal%20Layout.png",
                 )
 
-        # st.dataframe(full_patient_df_2)
-
-        st.dataframe(full_patient_df_2)
-
         queue_audit_1 = pd.DataFrame(patient_count_df_1[patient_count_df_1["event"]=="treatment_wait_begins"].value_counts(["minute", "run"]).sort_index())
         queue_audit_1['Scenario'] = "Scenario 1"
         queue_audit_2 = pd.DataFrame(patient_count_df_2[patient_count_df_2["event"]=="treatment_wait_begins"].value_counts(["minute", "run"]).sort_index())
