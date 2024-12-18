@@ -274,7 +274,7 @@ if button_run_pressed:
 
             st.button("Play Animations Simultaneously", on_click=play_both)
 
-            st.button("Pause All Animations", on_click=pause_both)
+            # st.button("Pause All Animations", on_click=pause_both)
 
             with scenario1_out:
 

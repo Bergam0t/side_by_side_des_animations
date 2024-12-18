@@ -211,6 +211,6 @@ if button_run_pressed:
 
             col_button_1.button("Play Both Animations Simultaneously", on_click=play_both, use_container_width=True)
 
-            col_button_2.button("Pause Both Animations", on_click=pause_both, use_container_width=True)
+            # col_button_2.button("Pause Both Animations", on_click=pause_both, use_container_width=True)
 
         pathway_animations()
