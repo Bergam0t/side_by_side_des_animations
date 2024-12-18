@@ -91,7 +91,7 @@ if button_run_pressed:
                     icon_and_text_size=18,
                     gap_between_entities=10,
                     gap_between_rows=25,
-                    plotly_height=700/1.3,
+                    plotly_height=800/1.3,
                     frame_duration=200,
                     plotly_width=1200/1.3,
                     override_x_max=300,
@@ -101,7 +101,7 @@ if button_run_pressed:
                     step_snapshot_max=125,
                     time_display_units="dhm",
                     display_stage_labels=True,
-                    add_background_image="Simplest Model Background Image - Horizontal Layout.png",
+                    add_background_image="https://raw.githubusercontent.com/Bergam0t/side_by_side_des_animations/refs/heads/main/Simplest%20Model%20Background%20Image%20-%20Horizontal%20Layout.png",
                 )
 
         # activity_animation_1["layout"].pop("updatemenus")
@@ -134,7 +134,7 @@ if button_run_pressed:
                     icon_and_text_size=18,
                     gap_between_entities=10,
                     gap_between_rows=25,
-                    plotly_height=700/1.3,
+                    plotly_height=800/1.3,
                     frame_duration=200,
                     plotly_width=1200/1.3,
                     override_x_max=300,
@@ -144,7 +144,7 @@ if button_run_pressed:
                     step_snapshot_max=125,
                     time_display_units="dhm",
                     display_stage_labels=True,
-                    add_background_image="Simplest Model Background Image - Horizontal Layout.png",
+                    add_background_image="https://raw.githubusercontent.com/Bergam0t/side_by_side_des_animations/refs/heads/main/Simplest%20Model%20Background%20Image%20-%20Horizontal%20Layout.png",
                 )
 
     #     activity_animation_2.update_layout(
