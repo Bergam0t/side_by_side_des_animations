@@ -43,6 +43,8 @@ class g:
     sim_duration = 600
     number_of_runs = 100
 
+    audit_interval = 5
+
 # Class representing patients coming in to the clinic.
 class Patient:
     '''
@@ -108,6 +110,58 @@ class Model:
         self.treat_dist = Lognormal(mean = g.trauma_treat_mean,
                                     stdev = g.trauma_treat_var,
                                     random_seed = self.run_number*g.random_number_set)
+
+        self.utilisation_audit = []
+
+    def interval_audit_utilisation(self, resources, interval=1):
+        '''
+        Record utilisation at defined intervals.
+
+        Needs to be passed to env.process when running model.
+
+        Parameters:
+        ------
+        resource: SimPy resource object
+            The resource to monitor
+            OR
+            a list of dictionaries containing simpy resource objects in the format
+            [{'resource_name':'my_resource', 'resource_object': resource},
+            {'resource_name':'my_second_resource', 'resource_object': resource_2}
+            ]
+            where resource and resource_2 in the examples above are simpy resources.
+
+        interval: int:
+            Time between audits.
+            In simpy time units
+            Default: 1
+        '''
+
+        # Keep doing the below as long as the simulation is running
+        while True:
+
+            # Code for what to do if we pass in a list of resources
+            if isinstance(resources, list):
+                for i in range(len(resources)):
+                    self.utilisation_audit.append({
+                        'resource_name': resources[i]['resource_name'], # The provided name for the resource
+                        'simulation_time': self.env.now,  # The current simulation time
+                        'number_utilised': len(resources[i]['resource_object'].count), # The number of users
+                        'number_available': resources[i]['resource_object'].capacity, # The total resource available,
+                        'queue_length': len(resources[i]['resource_object'].queue)
+                    })
+
+            else:
+
+                # Code for what to do if we just pass in a single resource to monitor
+                self.utilisation_audit.append({
+                    'simulation_time': self.env.now,  # The current simulation time
+                    'number_utilised': len(resources.items),  # The number of users
+                    'number_available': resources.capacity, # The total resource available
+                })
+
+
+            # Trigger next audit after desired interval has passed.
+            yield self.env.timeout(interval)
 
     def init_resources(self):
         '''
@@ -248,6 +302,11 @@ class Model:
         # we had multiple generators.
         self.env.process(self.generator_patient_arrivals())
 
+        self.env.process(
+                self.interval_audit_utilisation(resources=self.treatment_cubicles,
+                                                interval=g.audit_interval)
+            )
+
         # Run the model for the duration specified in g class
         self.env.run(until=g.sim_duration)
 
@@ -273,6 +332,10 @@ class Trial:
         self.df_trial_results.set_index("Run Number", inplace=True)
 
         self.all_event_logs = []
+        self.interval_audit_list = []
+
+    def get_interval_audits(self):
+        return pd.concat(self.interval_audit_list)
 
     # Method to run a trial
     def run_trial(self):
@@ -298,7 +361,16 @@ class Trial:
                 my_model.mean_q_time_cubicle,
             ]
 
-            print(event_log)
+            interval_audit_df = pd.DataFrame(my_model.utilisation_audit)
+            interval_audit_df["run"] = run
+            interval_audit_df["perc_utilisation"] = (
+              interval_audit_df["number_utilised"]/interval_audit_df["number_available"]
+            )
+
+            self.interval_audit_list.append(interval_audit_df)
+
+
+            # print(event_log)
 
             self.all_event_logs.append(event_log)
 
