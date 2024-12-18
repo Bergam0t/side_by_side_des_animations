@@ -271,15 +271,14 @@ if button_run_pressed:
       return new Promise((resolve, reject) => {
         try {
           const transformValue = element.getAttribute("transform"); // Get the current transform value
-          const className = element.className; // Get the class of the element
 
           // Find all elements with the same class name
-          const elements = parentDocument.querySelectorAll(`.${className}`);
+          const elements = parentDocument.querySelectorAll(classToObserve);
 
           // Apply the same transform value to all elements
           elements.forEach(el => {
             if (el !== element) {
-              el.style.transform = transformValue;
+              el.setAttribute("transform", transformValue);
             }
           });
 
@@ -293,6 +292,11 @@ if button_run_pressed:
     // Find all elements with a given class and start observing them
     let classToObserve = '.slider-grip-rect';
     console.log("Looking for elements to observe of class", classToObserve);
+    var delayInMilliseconds = 1000; //1 second
+
+    setTimeout(function() {
+    //your code to be executed after 1 second
+    }, delayInMilliseconds);
 
     const elementsToObserve = parentDocument.querySelectorAll(classToObserve);
     console.log("Found", elementsToObserve.length, "elements to observe of class", classToObserve);
