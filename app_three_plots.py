@@ -11,6 +11,12 @@ st.set_page_config(layout="wide")
 
 st.title("Side-by-side DES Animation - Animations Plus Additional Plots")
 
+st.write(
+    """
+Building on the approach shown on the previous page, this demonstrates how additional animated plotly plots can be triggered simultaneously with animated simulation model outputs from the vidigi package.
+    """
+)
+
 event_position_df = pd.DataFrame([
                     {'event': 'arrival',
                      'x':  50, 'y': 280,
@@ -32,8 +38,8 @@ event_position_df = pd.DataFrame([
 
                 ])
 
-num_runs_input = st.slider("How many runs of the simulation should be done?",
-                                  min_value=1, max_value=20, value=3)
+num_runs_input = 2 # st.slider("How many runs of the simulation should be done?",
+                                #   min_value=1, max_value=20, value=3)
 
 sim_duration_input = st.number_input("How long should the simulation run for (minutes)?",
                                       min_value=60, max_value=480, value=480)
@@ -46,6 +52,7 @@ st.write("---")
 scenario1, gap, scenario2 = st.columns([0.45, 0.1, 0.45])
 
 with scenario1:
+    st.subheader("Scenario 1")
     s1_n_cubicles = st.slider("What is the number of nurses in the system?",
                             min_value=1, max_value=10, value=1)
 
@@ -55,20 +62,21 @@ with scenario1:
     s1_trauma_treat_var = st.slider("How much does the time for a consultation vary by (in minutes)?",
                                 min_value = 0, max_value=30, value=15)
 
-    s1_arrival_rate = st.slider("What is the average length of time between patients arriving?",
+    s1_arrival_rate = st.slider("What is the average length of time between patients arriving (in minutes)?",
                             min_value=1, max_value=30, value=5)
 
 with scenario2:
+    st.subheader("Scenario 2")
     s2_n_cubicles = st.slider("What is the number of nurses in the system?",
                             min_value=1, max_value=10, value=1, key="s2_n_cubicles")
 
     s2_trauma_treat_mean = st.slider("What is the mean length of time (in minutes) for a consultation?",
-                                min_value = 3, max_value=60, value=15, key="s2_trauma_treat_m")
+                                min_value = 3, max_value=60, value=25, key="s2_trauma_treat_m")
 
     s2_trauma_treat_var = st.slider("How much does the time for a consultation vary by (in minutes)?",
                                 min_value = 0, max_value=30, value=20, key="s2_trauma_treat_v")
 
-    s2_arrival_rate = st.slider("What is the average length of time between patients arriving?",
+    s2_arrival_rate = st.slider("What is the average length of time between patients arriving (in minutes)?",
                             min_value=1, max_value=30, value=5, key="s2_trauma_treat_iat")
 
 st.write("---")
@@ -84,7 +92,7 @@ if button_run_pressed:
         g.arrival_rate = s1_arrival_rate
 
         scenario_1_attrs = {
-            "Number of Cubicles": g.n_cubicles,
+            "Number of Nurses": g.n_cubicles,
             "Trauma Treatment Mean (Minutes)": g.trauma_treat_mean,
             "Trauma Treatment Variance (Minutes)": g.trauma_treat_var,
             "Inter-Arrival Time (Minutes)": g.arrival_rate
@@ -125,8 +133,8 @@ if button_run_pressed:
                     scenario=g(),
                     debug_mode=True,
                     include_play_button=True,
-                    icon_and_text_size=18,
-                    plotly_height=800/1.3,
+                    icon_and_text_size=16,
+                    plotly_height=700/1.3,
                     frame_duration=200,
                     plotly_width=1200/1.3,
                     override_x_max=300,
@@ -155,7 +163,7 @@ if button_run_pressed:
         g.arrival_rate = s2_arrival_rate
 
         scenario_2_attrs = {
-            "Number of Cubicles": g.n_cubicles,
+            "Number of Nurses": g.n_cubicles,
             "Trauma Treatment Mean (Minutes)": g.trauma_treat_mean,
             "Trauma Treatment Variance (Minutes)": g.trauma_treat_var,
             "Inter-Arrival Time (Minutes)": g.arrival_rate
@@ -196,8 +204,8 @@ if button_run_pressed:
                     scenario=g(),
                     debug_mode=True,
                     include_play_button=True,
-                    icon_and_text_size=18,
-                    plotly_height=800/1.3,
+                    icon_and_text_size=16,
+                    plotly_height=700/1.3,
                     frame_duration=200,
                     plotly_width=1200/1.3,
                     override_x_max=300,
@@ -235,8 +243,9 @@ if button_run_pressed:
                 animation_frame="minute",
                 animation_group="Scenario",
                 range_x=[0, queue_audit_full['count'].max()*1.1],
-                orientation="h"
-                )
+                orientation="h",
+                height=300,
+                ).update_layout(xaxis_title="Queue Length (Number of People)")
 
         queue_bar.layout.updatemenus[0].buttons[0].args[1]['frame']['duration'] = 200
         queue_bar.layout.updatemenus[0].buttons[0].args[1]['transition']['duration'] = 600
@@ -274,7 +283,7 @@ if button_run_pressed:
 
             col_blank_button_a, col_button_1, col_blank_button_b = st.columns(3)
 
-            col_button_1.button("Play Both Animations Simultaneously", on_click=play_both, use_container_width=True)
+            col_button_1.button("Play All Animations Simultaneously", on_click=play_both, use_container_width=True)
 
             # st.button("Pause All Animations", on_click=pause_both)
 

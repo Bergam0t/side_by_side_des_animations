@@ -10,6 +10,24 @@ st.set_page_config(layout="wide")
 
 st.title("Side-by-side DES Animation - Animations Only")
 
+st.write(
+    """
+This page demonstrates a method for allowing animated versions of simulated pathways to be displayed side by side and triggered (nearly) simultaneously.
+
+This could be used to effectively demonstrate the benefits or downsides of 'what-if' scenarios that are tried out in the simulation - either comparing this with the current reality, or the difference between two proposed scenarios.
+
+By being able to view the size of queues and resource utilisation at the same point in time, it is hoped that users will be able to build up a sense of the impact of changes on their system.
+
+There are several limitations of this approach at the moment:
+
+- it is not possible to simultaneously pause the animations
+- grabbing the timeline bar in one animation does not propagate the change to the other bar (though some progress has been made on this)
+- there is a very small delay before the second plot is animated, leading to the animations being up to a couple of time steps out
+
+However, it is hoped that the benefits of being able to offer this sort of visual will - for now - outweigh the downsides.
+    """
+)
+
 event_position_df = pd.DataFrame([
                     {'event': 'arrival',
                      'x':  50, 'y': 280,
@@ -31,8 +49,8 @@ event_position_df = pd.DataFrame([
 
                 ])
 
-num_runs_input = st.slider("How many runs of the simulation should be done?",
-                                  min_value=1, max_value=20, value=3)
+num_runs_input = 2 #st.slider("How many runs of the simulation should be done?",
+                                #   min_value=1, max_value=20, value=3)
 
 sim_duration_input = st.number_input("How long should the simulation run for (minutes)?",
                                       min_value=60, max_value=480, value=480)
@@ -45,6 +63,7 @@ st.write("---")
 scenario1, gap, scenario2 = st.columns([0.45, 0.1, 0.45])
 
 with scenario1:
+    st.subheader("Scenario 1")
     s1_n_cubicles = st.slider("What is the number of nurses in the system?",
                             min_value=1, max_value=10, value=1)
 
@@ -54,20 +73,21 @@ with scenario1:
     s1_trauma_treat_var = st.slider("How much does the time for a consultation vary by (in minutes)?",
                                 min_value = 0, max_value=30, value=15)
 
-    s1_arrival_rate = st.slider("What is the average length of time between patients arriving?",
+    s1_arrival_rate = st.slider("What is the average length of time between patients arriving (in minutes)?",
                             min_value=1, max_value=30, value=5)
 
 with scenario2:
+    st.subheader("Scenario 2")
     s2_n_cubicles = st.slider("What is the number of nurses in the system?",
                             min_value=1, max_value=10, value=1, key="s2_n_cubicles")
 
     s2_trauma_treat_mean = st.slider("What is the mean length of time (in minutes) for a consultation?",
-                                min_value = 3, max_value=60, value=15, key="s2_trauma_treat_m")
+                                min_value = 3, max_value=60, value=25, key="s2_trauma_treat_m")
 
     s2_trauma_treat_var = st.slider("How much does the time for a consultation vary by (in minutes)?",
                                 min_value = 0, max_value=30, value=20, key="s2_trauma_treat_v")
 
-    s2_arrival_rate = st.slider("What is the average length of time between patients arriving?",
+    s2_arrival_rate = st.slider("What is the average length of time between patients arriving (in minutes)?",
                             min_value=1, max_value=30, value=5, key="s2_trauma_treat_iat")
 
 st.write("---")
@@ -83,7 +103,7 @@ if button_run_pressed:
         g.arrival_rate = s1_arrival_rate
 
         scenario_1_attrs = {
-            "Number of Cubicles": g.n_cubicles,
+            "Number of Nurses": g.n_cubicles,
             "Trauma Treatment Mean (Minutes)": g.trauma_treat_mean,
             "Trauma Treatment Variance (Minutes)": g.trauma_treat_var,
             "Inter-Arrival Time (Minutes)": g.arrival_rate
@@ -133,7 +153,7 @@ if button_run_pressed:
         g.arrival_rate = s2_arrival_rate
 
         scenario_2_attrs = {
-            "Number of Cubicles": g.n_cubicles,
+            "Number of Nurses": g.n_cubicles,
             "Trauma Treatment Mean (Minutes)": g.trauma_treat_mean,
             "Trauma Treatment Variance (Minutes)": g.trauma_treat_var,
             "Inter-Arrival Time (Minutes)": g.arrival_rate
@@ -211,114 +231,5 @@ if button_run_pressed:
             col_blank_button_a, col_button_1, col_blank_button_b = st.columns(3)
 
             col_button_1.button("Play Both Animations Simultaneously", on_click=play_both, use_container_width=True)
-
-
-#             st_javascript("""(async () => {
-#   // We wrap everything inside a function to return the promise
-#   return (async () => {
-#     // Log initial messages to verify execution
-#     console.log("Commencing insertion of slider position monitoring code");
-
-#     const parentDocument = window.parent.document;
-
-#     console.log("Check this is reached");
-
-#     // Function to start observing
-#     function startObserving(element) {
-#       console.log("Added observer code");
-#       return new Promise((resolve, reject) => {
-#         try {
-#           observer.observe(element, {
-#             attributes: true, // Watch for attribute changes
-#             attributeFilter: ['style'], // Only listen to 'style' changes
-#           });
-
-#           resolve(`Started observing element: ${element.className}`);
-#         } catch (error) {
-#           reject('Error starting observer: ' + error);
-#         }
-#       });
-#     }
-
-#     // Create a MutationObserver to watch for changes in the style attribute
-#     const observer = new MutationObserver(mutations => {
-#       mutations.forEach(mutation => {
-#         console.log('Mutation Observed', mutation);
-#         if (mutation.type === 'attributes' && mutation.attributeName === 'style') {
-#           console.log("Correct type of mutation");
-#           const element = mutation.target;
-#           const transformValue = element.getAttribute("transform");
-#           console.log("Transform Value From Mutation:", transformValue);
-
-#           // If transform was modified, propagate it to other elements with the same class
-#           if (transformValue) {
-#             console.log(transformValue);
-#             propagateTransformChanges(element).then(
-#               successMessage => {
-#                 console.log(successMessage);
-#               },
-#               errorMessage => {
-#                 console.error(errorMessage);
-#               }
-#             );
-#           }
-#         }
-#       });
-#     });
-
-#     // Function to update transform on all elements with the same class
-#     function propagateTransformChanges(element) {
-#       return new Promise((resolve, reject) => {
-#         try {
-#           const transformValue = element.getAttribute("transform"); // Get the current transform value
-
-#           // Find all elements with the same class name
-#           const elements = parentDocument.querySelectorAll(classToObserve);
-
-#           // Apply the same transform value to all elements
-#           elements.forEach(el => {
-#             if (el !== element) {
-#               el.setAttribute("transform", transformValue);
-#             }
-#           });
-
-#           resolve(`Transform applied to ${elements.length} elements.`);
-#         } catch (error) {
-#           reject('Error propagating transform: ' + error);
-#         }
-#       });
-#     }
-
-#     // Find all elements with a given class and start observing them
-#     let classToObserve = '.slider-grip-rect';
-#     console.log("Looking for elements to observe of class", classToObserve);
-#     var delayInMilliseconds = 1000; //1 second
-
-#     setTimeout(function() {
-#     //your code to be executed after 1 second
-#     }, delayInMilliseconds);
-
-#     const elementsToObserve = parentDocument.querySelectorAll(classToObserve);
-#     console.log("Found", elementsToObserve.length, "elements to observe of class", classToObserve);
-
-#     // Ensure that the code reaches here and starts observing elements
-#     Array.from(elementsToObserve).forEach(element => {
-#       console.log("Observing", element);
-#       startObserving(element).then(
-#         successMessage => {
-#           console.log(successMessage); // Log success messages from startObserving
-#         },
-#         errorMessage => {
-#           console.error(errorMessage); // Log error messages from startObserving
-#         }
-#       );
-#     });
-
-#   })(); // Immediately invoke this inner async function
-# })();
-
-#                       """)
-
-            # col_button_2.button("Pause Both Animations", on_click=pause_both, use_container_width=True)
 
         pathway_animations()
